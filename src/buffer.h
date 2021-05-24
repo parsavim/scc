@@ -18,10 +18,7 @@ struct buf {
 };
 typedef struct buf buf_t;
 
-/* 
- * Initialize a new empty buffer. p will be set to point to the string literal
- * '\0' so that it can be used in string operations. 
- */
+ /* Initializes a new empty buffer. */
 static inline
 buf_t buf_new() {
     /* Assume that the caller will append at least one time to preallocate. */
@@ -31,7 +28,7 @@ buf_t buf_new() {
     return buf;
 }
 
-/* Free the buffer. The buffer should not be used after being freed. */
+/* Frees the buffer. The buffer should not be used after being freed. */
 static inline
 void buf_free(buf_t buf) {
     if (buf.cap > 0) {
@@ -39,7 +36,27 @@ void buf_free(buf_t buf) {
     }
 }
 
-/* Append a byte to the end of the buffer. */
+/* Frees the buffer but allows it to be reused. */
+static inline
+void buf_clear(buf_t* buf) {
+    buf_free(*buf);
+    *buf = buf_new();
+}
+
+/*
+ * Returns a pointer to a null-terminated character array with data
+ * equivalent to those stored in the buffer.
+ */
+static inline
+const char* buf_c_str(buf_t buf) {
+    return (const char*)buf.p;
+}
+
+/* Appends a byte to the end of the buffer. */
 void buf_append(buf_t* buf, u8 b);
+
+/* Appends n bytes from src to buf. */
+void buf_extend(buf_t* buf, const u8* src);
+
 
 #endif
