@@ -20,27 +20,26 @@ typedef struct buf buf_t;
 
  /* Initializes a new empty buffer. */
 static inline
-buf_t buf_new() {
+void buf_init(buf_t* buf) {
     /* Assume that the caller will append at least one time to preallocate. */
-    buf_t buf = { .len=1, .cap=2 };
-    buf.p = malloc(sizeof (u8) * buf.cap);
-    *buf.p = 0;
-    return buf;
+    buf->len = 1, buf->cap = 2;
+    buf->p = malloc(sizeof (u8) * buf->cap);
+    *buf->p = 0;
 }
 
 /* Frees the buffer. The buffer should not be used after being freed. */
 static inline
-void buf_free(buf_t buf) {
-    if (buf.cap > 0) {
-        free(buf.p);
+void buf_free(buf_t* buf) {
+    if (buf->cap > 0) {
+        free(buf->p);
     }
 }
 
 /* Frees the buffer but allows it to be reused. */
 static inline
 void buf_clear(buf_t* buf) {
-    buf_free(*buf);
-    *buf = buf_new();
+    buf_free(buf);
+    buf_init(buf);
 }
 
 /*
@@ -48,8 +47,8 @@ void buf_clear(buf_t* buf) {
  * equivalent to those stored in the buffer.
  */
 static inline
-const char* buf_c_str(buf_t buf) {
-    return (const char*)buf.p;
+const char* buf_c_str(buf_t* buf) {
+    return (const char*)buf->p;
 }
 
 /* Appends a byte to the end of the buffer. */
