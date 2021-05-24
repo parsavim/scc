@@ -55,7 +55,6 @@ const char* buf_c_str(buf_t* buf) {
 void buf_append(buf_t* buf, u8 b);
 
 /* Appends n bytes from src to buf. */
-void buf_extend(buf_t* buf, const u8* src);
-
+void buf_extend(buf_t* buf, const u8* src, u32 n);
 
 #endif
