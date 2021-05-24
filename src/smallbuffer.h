@@ -24,21 +24,21 @@ typedef struct sbuf sbuf_t;
 
 /* Initialize a new buffer. */
 static inline
-void sbuf_init(sbuf_t* sbuf) {
+void sbuf_init(sbuf_t* const sbuf) {
     sbuf->len = 1;
     sbuf->small[0] = 0;
 }
 
 /* Free the buffer. The buffer should not be used after being freed. */
 static inline
-void sbuf_free(sbuf_t* sbuf) {
+void sbuf_free(sbuf_t* const sbuf) {
     if (sbuf->len > SBUF_SIZE) {
         buf_free(&sbuf->buf);
     }
 }
 
 static inline
-void sbuf_clear(sbuf_t* sbuf) {
+void sbuf_clear(sbuf_t* const sbuf) {
     sbuf_free(sbuf);
     sbuf_init(sbuf);
 }
@@ -48,12 +48,11 @@ void sbuf_clear(sbuf_t* sbuf) {
  * equivalent to those stored in the buffer.
  */
 static inline
-const char* sbuf_c_str(sbuf_t* sbuf) {
+const char* sbuf_c_str(const sbuf_t* const sbuf) {
     if (sbuf->len > SBUF_SIZE) {
         return (const char*)sbuf->small;
     }
     return buf_c_str(&sbuf->buf);
 }
-
 
 #endif
