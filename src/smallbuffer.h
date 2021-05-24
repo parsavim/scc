@@ -1,0 +1,59 @@
+#ifndef __SCC_SMALLBUFFER_H__
+#define __SCC_SMALLBUFFER_H__
+
+#include "buffer.h"
+#include "types.h"
+
+/* Size of the local buffer. */
+#define SBUF_SIZE 32
+
+/*
+ * Small buffer optimization. If the buffer length exceeds SBUF_SIZE,
+ * the whole buffer (all of its contents) will be moved to the buf_t.
+ * Like buf_t, len includes the NUL byte.
+ */
+struct sbuf {
+    u8 len;              /* Current ammount of small buffer being used. */
+    /* If len < SBUF_SIZE, small should be accessed. Otherwise buf. */
+    union {
+        u8 small[SBUF_SIZE];
+        buf_t buf;
+    };
+};
+typedef struct sbuf sbuf_t;
+
+/* Initialize a new buffer. */
+static inline
+void sbuf_init(sbuf_t* sbuf) {
+    sbuf->len = 1;
+    sbuf->small[0] = 0;
+}
+
+/* Free the buffer. The buffer should not be used after being freed. */
+static inline
+void sbuf_free(sbuf_t* sbuf) {
+    if (sbuf->len > SBUF_SIZE) {
+        buf_free(&sbuf->buf);
+    }
+}
+
+static inline
+void sbuf_clear(sbuf_t* sbuf) {
+    sbuf_free(sbuf);
+    sbuf_init(sbuf);
+}
+
+/*
+ * Returns a pointer to a null-terminated character array with data
+ * equivalent to those stored in the buffer.
+ */
+static inline
+const char* sbuf_c_str(sbuf_t* sbuf) {
+    if (sbuf->len > SBUF_SIZE) {
+        return (const char*)sbuf->small;
+    }
+    return buf_c_str(&sbuf->buf);
+}
+
+
+#endif
