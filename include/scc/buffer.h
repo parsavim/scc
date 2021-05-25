@@ -46,7 +46,7 @@ void buf_clear(buf_t* const buf) {
  * equivalent to those stored in the buffer.
  */
 static inline
-const char* buf_c_str(const buf_t* const buf) {
+char const* buf_c_str(buf_t const* const buf) {
     return buf->p;
 }
 
@@ -54,6 +54,6 @@ const char* buf_c_str(const buf_t* const buf) {
 void buf_append(buf_t* buf, uint8_t b);
 
 /* Appends n bytes from src to buf. */
-void buf_extend(buf_t* buf, const uint8_t* src, uint32_t n);
+void buf_extend(buf_t* buf, uint8_t const* src, uint32_t n);
 
 #endif

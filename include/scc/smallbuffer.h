@@ -49,7 +49,7 @@ void sbuf_clear(sbuf_t* const sbuf) {
  * equivalent to those stored in the buffer.
  */
 static inline
-const char* sbuf_c_str(const sbuf_t* const sbuf) {
+char const* sbuf_c_str(sbuf_t const* const sbuf) {
     if (sbuf->len > SBUF_SIZE) {
         return sbuf->small;
     }

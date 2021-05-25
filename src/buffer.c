@@ -1,8 +1,9 @@
-#include "buffer.h"
+#include <scc/buffer.h>
 
+#include <stdint.h>
 #include <stdlib.h>
 
-void buf_append(buf_t* const buf, const u8 b) {
+void buf_append(buf_t* const buf, char const b) {
     ++buf->len;
     if (buf->len > buf->cap) {
         buf->cap *= 2;
@@ -12,8 +13,8 @@ void buf_append(buf_t* const buf, const u8 b) {
     buf->p[buf->len-1] = 0;
 }
 
-void buf_extend(buf_t *const buf, const u8 * const src, const u32 n) {
-    for (u32 i = 0; i < n; ++i) {
+void buf_extend(buf_t *const buf, char const* const src, uint32_t const n) {
+    for (uint32_t i = 0; i < n; ++i) {
         buf_append(buf, src[i]);
     }
 }

@@ -5,7 +5,7 @@
 
 /* Represents a position in a file. */
 struct pos {
-    const char* filename;
+    char const* filename;
     uint32_t line, col;
 };
 typedef struct pos pos_t;
