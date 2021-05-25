@@ -2,7 +2,8 @@
 #define __SCC_SMALLBUFFER_H__
 
 #include "buffer.h"
-#include "types.h"
+
+#include <stdint.h>
 
 /* Size of the local buffer. */
 #define SBUF_SIZE 32
@@ -13,10 +14,10 @@
  * Like buf_t, len includes the NUL byte.
  */
 struct sbuf {
-    u8 len;              /* Current ammount of small buffer being used. */
+    uint8_t len;              /* Current ammount of small buffer being used. */
     /* If len < SBUF_SIZE, small should be accessed. Otherwise buf. */
     union {
-        u8 small[SBUF_SIZE];
+        char small[SBUF_SIZE];
         buf_t buf;
     };
 };
@@ -50,7 +51,7 @@ void sbuf_clear(sbuf_t* const sbuf) {
 static inline
 const char* sbuf_c_str(const sbuf_t* const sbuf) {
     if (sbuf->len > SBUF_SIZE) {
-        return (const char*)sbuf->small;
+        return sbuf->small;
     }
     return buf_c_str(&sbuf->buf);
 }

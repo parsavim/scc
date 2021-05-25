@@ -1,9 +1,8 @@
 #ifndef __SCC_BUFFER_H__
 #define __SCC_BUFFER_H__
 
-#include "types.h"
-
 #include <stddef.h>
+#include <stdint.h>
 #include <stdlib.h>
 
 /*
@@ -13,8 +12,8 @@
  * subtract 1.
  */
 struct buf {
-    u32 len, cap;
-    u8* p;
+    uint32_t len, cap;
+    char* p;
 };
 typedef struct buf buf_t;
 
@@ -23,7 +22,7 @@ static inline
 void buf_init(buf_t* const buf) {
     /* Assume that the caller will append at least one time to preallocate. */
     buf->len = 1, buf->cap = 2;
-    buf->p = malloc(sizeof (u8) * buf->cap);
+    buf->p = malloc(sizeof (uint8_t) * buf->cap);
     *buf->p = 0;
 }
 
@@ -48,13 +47,13 @@ void buf_clear(buf_t* const buf) {
  */
 static inline
 const char* buf_c_str(const buf_t* const buf) {
-    return (const char*)buf->p;
+    return buf->p;
 }
 
 /* Appends a byte to the end of the buffer. */
-void buf_append(buf_t* buf, u8 b);
+void buf_append(buf_t* buf, uint8_t b);
 
 /* Appends n bytes from src to buf. */
-void buf_extend(buf_t* buf, const u8* src, u32 n);
+void buf_extend(buf_t* buf, const uint8_t* src, uint32_t n);
 
 #endif
