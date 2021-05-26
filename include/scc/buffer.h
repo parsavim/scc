@@ -51,9 +51,9 @@ char const* buf_c_str(buf_t const* const buf) {
 }
 
 /* Appends a byte to the end of the buffer. */
-void buf_append(buf_t* buf, uint8_t b);
+void buf_append(buf_t* buf, char b);
 
 /* Appends n bytes from src to buf. */
-void buf_extend(buf_t* buf, uint8_t const* src, uint32_t n);
+void buf_extend(buf_t* buf, char const* src, uint32_t n);
 
 #endif
