@@ -22,7 +22,7 @@ static inline
 void buf_init(buf_t* const buf) {
     /* Assume that the caller will append at least one time to preallocate. */
     buf->len = 1, buf->cap = 2;
-    buf->p = malloc(sizeof (uint8_t) * buf->cap);
+    buf->p = malloc(sizeof *buf->p * buf->cap);
     *buf->p = 0;
 }
 
