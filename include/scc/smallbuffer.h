@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 /* Size of the local buffer. */
-#define SBUF_SIZE 4
+#define SBUF_SIZE 16
 
 /*
  * Small buffer optimization. If the buffer length exceeds SBUF_SIZE,
