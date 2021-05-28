@@ -16,7 +16,7 @@ void sbuf_append(sbuf_t* const sbuf, char const b) {
              * so a temporary buffer has to be created first.
              */
             buf_t tmp;
-            buf_init(&tmp);
+            buf_reserve(&tmp, SBUF_SIZE-1);
             buf_extend(&tmp, sbuf->small, SBUF_SIZE-1);
             sbuf->buf = tmp;
         }
