@@ -26,10 +26,10 @@ void buf_init(buf_t* const buf) {
     *buf->p = 0;
 }
 
-/* Increases the capacity of the buffer. Can only be used for initializing. */
+/* Sets the capacity of the buffer to cap + 1. Can only be used for initializing. */
 static inline
 void buf_reserve(buf_t* const buf, uint32_t cap) {
-    buf->len = 1, buf->cap = (cap == 0) ? 1 : cap;
+    buf->len = 1, buf->cap = cap + 1;
     buf->p = malloc(sizeof *buf->p * buf->cap);
     *buf->p = 0;
 }
