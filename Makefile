@@ -17,7 +17,7 @@ PREFIX := /usr
 LIB := $(BIN_DIR)/libscc.a 
 
 OPTLVL := 0
-CFLAGS := -O$(OPTLVL) -Wall -Werror -I$(INC_DIR) -I$(PREFIX)/include
+CFLAGS := -O$(OPTLVL) -std=c99 -Wall -Werror -I$(INC_DIR) -I$(PREFIX)/include
 
 CC ?= gcc
 AR ?= ar
