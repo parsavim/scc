@@ -1,6 +1,8 @@
 #ifndef __TESTING_TESTING_H__
 #define __TESTING_TESTING_H__
 
+#include <math.h>
+#include <stdarg.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdint.h>
@@ -10,18 +12,67 @@
 static uint32_t test_total_tests = 0;
 static uint32_t test_failed_tests = 0;
 
+/* Always terminated with a null character. */
+struct test_buf {
+    uint32_t cap;
+    char* p;
+};
+typedef struct test_buf test_buf_t;
 
-struct {
-    char name[L_tmpnam+1];
-    FILE* wf;
-} test_tmp_fail_msgs;
+test_buf_t test_fail_out;
+
+static inline
+void test_buf_init(test_buf_t* buf) {
+    buf->cap = 1;
+    buf->p = malloc(sizeof *buf->p * buf->cap);
+    buf->p[0] = '\0';
+}
+
+static
+void test_bprintf(test_buf_t* buf, char const* fmt, ...) {
+    /* Calculate extra amount of space that needs to be reserved. */
+    va_list args;
+    va_start(args, fmt);
+    uint32_t extra = 0;
+    for (char const* it = fmt; *it; ++it) {
+        if (*it != '%') {
+            ++extra;
+            continue;
+        }
+        switch (*++it) {
+            case '%':
+                ++extra;
+                break;
+            case 'd':
+                ;
+                int const x = va_arg(args, int);
+                extra += (x < 0) ? 1 : 0;
+                extra += (uint32_t)log10(x) + 1;
+                break;
+            case 'u':
+                extra += (uint32_t)log10(va_arg(args, uint32_t)) + 1;
+                break;
+            case 's':
+                extra += strlen(va_arg(args, char const*));
+        }
+    }
+    va_end(args);
+    buf->p = realloc(buf->p, sizeof *buf->p * (buf->cap + extra));
+
+    va_start(args, fmt);
+    vsnprintf(buf->p+buf->cap-1, extra+1, fmt, args);
+    va_end(args);
+    buf->cap += extra;
+}
 
 #define TEST_FAIL(left_name, right_name, left, right, conversion_specifier) \
-    fprintf(test_tmp_fail_msgs.wf, "%s:%d: assertion failed: (%s == %s)\n" \
+    test_bprintf(&test_fail_out, "%s:%d: assertion failed: (%s == %s)\n" \
             "   left: `%" conversion_specifier "`\n" \
             "  right: `%" conversion_specifier "`\n\n", \
             __FILE__, __LINE__, left_name, right_name, left, right)
+
 #define TEST_END() return 0
+
 #define TEST_CMP_NUM(left, right) (left == right)
 #define TEST_CMP_STR(left, right) (strcmp(left, right) == 0)
 
@@ -56,33 +107,13 @@ struct {
     } while (0)
 
 #define TEST_RUN_START() \
-    do { \
-        test_tmp_fail_msgs.name[0] = '.'; \
-        tmpnam(test_tmp_fail_msgs.name+1); \
-        test_tmp_fail_msgs.wf = fopen(test_tmp_fail_msgs.name, "w"); \
-        if (!test_tmp_fail_msgs.wf) { \
-            perror("failed to start test."); \
-            exit(1); \
-        } \
-    } while (0)
+    test_buf_init(&test_fail_out)
 
 #define TEST_RUN_END() \
     do { \
-        fclose(test_tmp_fail_msgs.wf); \
         if (test_failed_tests) { \
-            puts("\nfailures:\n"); \
-            FILE* rf = fopen(test_tmp_fail_msgs.name, "r"); \
-            if (!rf) { \
-                perror("failed to open file with error messages."); \
-                exit(1); \
-            } \
-            char buf[4096]; \
-            size_t n; \
-            while ((n = fread(buf, 1, sizeof buf, rf)) > 0) \
-                fwrite(buf, 1, n, stdout); \
-            fclose(rf); \
+            printf("\nfailures:\n\n%s", test_fail_out.p); \
         } \
-        remove(test_tmp_fail_msgs.name); \
         printf("\ntest result: "); \
         if (test_failed_tests) { \
             printf(TEST_FAIL_STR); \
