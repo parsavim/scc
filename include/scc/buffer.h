@@ -26,6 +26,14 @@ void buf_init(buf_t* const buf) {
     *buf->p = 0;
 }
 
+/* Increases the capacity of the buffer. Can only be used for initializing. */
+static inline
+void buf_reserve(buf_t* const buf, uint32_t cap) {
+    buf->len = 1, buf->cap = (cap == 0) ? 1 : cap;
+    buf->p = malloc(sizeof *buf->p * buf->cap);
+    *buf->p = 0;
+}
+
 /* Frees the buffer. The buffer should not be used after being freed. */
 static inline
 void buf_free(buf_t* const buf) {
@@ -54,6 +62,11 @@ char const* buf_c_str(buf_t const* const buf) {
 void buf_append(buf_t* buf, char b);
 
 /* Appends n bytes from src to buf. */
-void buf_extend(buf_t* buf, char const* src, uint32_t n);
+static inline
+void buf_extend(buf_t *const buf, char const* const src, uint32_t const n) {
+    for (uint32_t i = 0; i < n; ++i) {
+        buf_append(buf, src[i]);
+    }
+}
 
 #endif
