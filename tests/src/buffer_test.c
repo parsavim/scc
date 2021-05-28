@@ -13,6 +13,26 @@ TEST(empty) {
     TEST_END();
 }
 
+TEST(reserving) {
+    buf_t buf;
+    char const* const s = "reserve";
+    char const* const t = " more";
+    buf_reserve(&buf, strlen(s));
+
+    /* Empty. */
+    TEST_STRING(buf_c_str(&buf), "");
+
+    /* Using amount reserved. */
+    buf_extend(&buf, s, strlen(s));
+    TEST_STRING(buf_c_str(&buf), s);
+
+    /* Using more. */
+    buf_extend(&buf, t, strlen(t));
+    TEST_STRING(buf_c_str(&buf), "reserve more");
+
+    TEST_END();
+}
+
 TEST(appending) {
     buf_t buf;
     buf_init(&buf);
@@ -30,8 +50,9 @@ TEST(appending) {
 int main(void) {
     TEST_RUN_START();
 
-    TEST_RUN(appending);
     TEST_RUN(empty);
+    TEST_RUN(reserving);
+    TEST_RUN(appending);
 
     TEST_RUN_END();
 }
