@@ -10,8 +10,15 @@ void sbuf_append(sbuf_t* const sbuf, char const b) {
         sbuf->small[sbuf->len-1] = 0;
     } else {
         if (sbuf->len == SBUF_SIZE+1) {
-            buf_init(&sbuf->buf);
-            buf_extend(&sbuf->buf, sbuf->small, SBUF_SIZE);
+            /*
+             * Since the small and buf fields of sbuf_t are unioned,
+             * buf_init with the buf field causes small to be overwritten,
+             * so a temporary buffer has to be created first.
+             */
+            buf_t tmp;
+            buf_init(&tmp);
+            buf_extend(&tmp, sbuf->small, SBUF_SIZE-1);
+            sbuf->buf = tmp;
         }
         buf_append(&sbuf->buf, b);
     }
