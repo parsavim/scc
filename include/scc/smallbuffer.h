@@ -6,7 +6,7 @@
 #include <stdint.h>
 
 /* Size of the local buffer. */
-#define SBUF_SIZE 32
+#define SBUF_SIZE 4
 
 /*
  * Small buffer optimization. If the buffer length exceeds SBUF_SIZE,
@@ -50,10 +50,12 @@ void sbuf_clear(sbuf_t* const sbuf) {
  */
 static inline
 char const* sbuf_c_str(sbuf_t const* const sbuf) {
-    if (sbuf->len > SBUF_SIZE) {
+    if (sbuf->len <= SBUF_SIZE) {
         return sbuf->small;
     }
     return buf_c_str(&sbuf->buf);
 }
+
+void sbuf_append(sbuf_t* sbuf, char b);
 
 #endif
