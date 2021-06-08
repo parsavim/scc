@@ -54,7 +54,7 @@ void buf_clear(buf_t* const buf) {
  */
 static inline
 char const* buf_c_str(buf_t const* const buf) {
-    return (buf->p) ? "" : buf->p;
+    return (!buf->p) ? "" : buf->p;
 }
 
 /* Appends a byte to the end of the buffer. */
