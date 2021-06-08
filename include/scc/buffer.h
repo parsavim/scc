@@ -20,8 +20,7 @@ typedef struct buf buf_t;
  /* Initializes a new empty buffer. */
 static inline
 void buf_init(buf_t* const buf) {
-    /* Assume that the caller will append at least one time to preallocate. */
-    buf->len = 1, buf->cap = 2;
+    buf->len = 1, buf->cap = 1;
     buf->p = malloc(sizeof *buf->p * buf->cap);
     *buf->p = 0;
 }
