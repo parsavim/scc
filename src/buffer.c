@@ -8,12 +8,12 @@ void buf_append(buf_t* const buf, char const b) {
     if (buf->len > buf->cap) {
         if (buf->cap == 0) {
             buf->cap = ++buf->len;
-            buf->p = malloc(sizeof *buf->p * buf->cap);
+            buf->ptr = malloc(sizeof *buf->ptr * buf->cap);
         } else {
             buf->cap *= 2;
-            buf->p = realloc(buf->p, sizeof *buf->p * buf->cap);
+            buf->ptr = realloc(buf->ptr, sizeof *buf->ptr * buf->cap);
         }
     }
-    buf->p[buf->len-2] = b;
-    buf->p[buf->len-1] = 0;
+    buf->ptr[buf->len-2] = b;
+    buf->ptr[buf->len-1] = 0;
 }
