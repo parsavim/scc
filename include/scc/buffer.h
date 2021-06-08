@@ -8,6 +8,7 @@
 /*
  * A growable buffer with amortized linear complexity. If p is valid, it will
  * be terminated with a NUL byte so that it can be used in string operations.
+ * If p is NULL, buc_c_str will return an empty string literal.
  * len includes the NUL byte, therefore for getting the length of the string
  * subtract 1.
  */
@@ -20,9 +21,8 @@ typedef struct buf buf_t;
  /* Initializes a new empty buffer. */
 static inline
 void buf_init(buf_t* const buf) {
-    buf->len = 1, buf->cap = 1;
-    buf->p = malloc(sizeof *buf->p * buf->cap);
-    *buf->p = 0;
+    buf->len = 0, buf->cap = 0;
+    buf->p = NULL;
 }
 
 /* Sets the capacity of the buffer to cap + 1. Can only be used for initializing. */
@@ -54,7 +54,7 @@ void buf_clear(buf_t* const buf) {
  */
 static inline
 char const* buf_c_str(buf_t const* const buf) {
-    return buf->p;
+    return (buf->p) ? "" : buf->p;
 }
 
 /* Appends a byte to the end of the buffer. */
