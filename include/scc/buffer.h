@@ -1,6 +1,8 @@
 #ifndef __SCC_BUFFER_H__
 #define __SCC_BUFFER_H__
 
+#include <scc/xalloc.h>
+
 #include <stddef.h>
 #include <stdint.h>
 #include <stdlib.h>
@@ -29,7 +31,7 @@ void buf_init(buf_t* const buf) {
 static inline
 void buf_reserve(buf_t* const buf, uint32_t cap) {
     buf->len = 1, buf->cap = cap + 1;
-    buf->ptr = malloc(sizeof *buf->ptr * buf->cap);
+    buf->ptr = xmalloc(sizeof *buf->ptr * buf->cap);
     *buf->ptr = 0;
 }
 
