@@ -9,6 +9,11 @@
 #include <stdlib.h>
 #include <string.h>
 
+/*
+ * TODO: use consistent naming convention for macros,
+ * use stdint.h standard conversion specifiers, and
+ * make everything look less ugly.
+ */
 static uint32_t test_total_tests = 0;
 static uint32_t test_failed_tests = 0;
 
